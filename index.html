@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SILINK Voice Interface</title>
+  <style>
+    body {
+      background-color: #0d0d0d;
+      color: #0ff6f6;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
+      text-align: center;
+      font-family: 'Arial', sans-serif;
+    }
+    h1 {
+      font-size: 3rem;
+      margin-bottom: 10px;
+    }
+    p {
+      font-size: 1.5rem;
+    }
+    button {
+      background-color: #111;
+      color: #0ff6f6;
+      border: 2px solid #0ff6f6;
+      padding: 10px 20px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    button:hover {
+      background-color: #0ff6f6;
+      color: #111;
+    }
+  </style>
+</head>
+<body>
+  <div>
+    <h1>Welcome to SILINK</h1>
+    <p id="status">Press the button and speak.</p>
+    <button onclick="startListening()">Activate Voice</button>
+  </div>
+  <script>
+    const status = document.getElementById('status');
+
+    function startListening() {
+      const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+      recognition.lang = 'en-US';
+      recognition.start();
+
+      recognition.onresult = (event) => {
+        const speech = event.results[0][0].transcript.toLowerCase();
+        status.innerHTML = `You said: "${speech}"`;
+
+        if (speech.includes('hello')) {
+          speak('Hello! Welcome to SILINK!');
+        } else if (speech.includes('what is silink')) {
+          speak('SILINK is your futuristic voice-driven platform for innovation.');
+        } else {
+          speak('Sorry, I didn’t catch that.');
+        }
+      };
+
+      recognition.onerror = (event) => {
+        status.innerHTML = `Error: ${event.error}`;
+      };
+    }
+
+    function speak(text) {
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'en-US';
+      window.speechSynthesis.speak(utterance);
+    }
+  </script>
+</body>
+</html>
